@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +15,17 @@ public class Bank {
 
     //possible list for auctionHouses class
     private List<AuctionHouse> auctionHouses;
+    private List<Agent> agents;
+    private int port;
+    private boolean running;
 
     // constructor
-    public Bank() {
+    public Bank(int port) {
+        this.port = port;
         this.accounts = new HashMap<>();
         this.auctionHouses = new ArrayList<>();
+        this.agents = new ArrayList<>();
+        this.running = false;
     }
 
     // methods
@@ -74,6 +85,56 @@ public class Bank {
         }
         return null;
     }
+    public void run() {
+        try(ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Bank server is running on port " + port);
+            running = true;
+            while (running) {
+                Socket clientSocket = serverSocket.accept();
+                Thread thread = new Thread(new BankWorker(clientSocket));
+                thread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private class BankWorker implements Runnable {
+
+        private Socket clientSocket;
+        private ObjectInputStream in;
+        private ObjectOutputStream out;
+
+        public BankWorker(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+            try {
+                this.in = new ObjectInputStream(clientSocket.getInputStream());
+                this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void run() {
+            try {
+                while (true) {
+                    // read the incoming message from the client
+
+
+                    // process the message and send a response
+
+                }
+            } finally {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
 
     public class Account {
         private String name;

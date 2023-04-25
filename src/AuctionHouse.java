@@ -25,21 +25,6 @@ public class AuctionHouse {
         this.bids = new ArrayList<>();
     }
 
-    /**
-     * meant to handle network communication
-     */
-    public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Auction house is running on port " + port);
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                Thread thread = new Thread(new AuctionHouseWorker(clientSocket));
-                thread.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private class AuctionHouseWorker implements Runnable {
 
