@@ -9,13 +9,12 @@ public class Bank {
     private Map<String, Account> accounts;
 
     //possible list for auctionHouses class
-    //private List<AuctionHouse> auctionHouses;
+    private List<AuctionHouse> auctionHouses;
 
     // constructor
     public Bank() {
         this.accounts = new HashMap<>();
-        //TODO: implement auctionHouse class
-        //this.auctionHouses = new ArrayList<>();
+        this.auctionHouses = new ArrayList<>();
     }
 
     // methods
@@ -27,17 +26,17 @@ public class Bank {
         return account.getName();
     }
 
-    //TODO: this class will add an auction house to the bank
-//    public void addAuctionHouse(AuctionHouse auctionHouse) {
-//        // adds the auction house to the auctionHouses list
-//        auctionHouses.add(auctionHouse);
-//    }
+    //this class adds an auction house to the bank
+    public void addAuctionHouse(AuctionHouse auctionHouse) {
+        // adds the auction house to the auctionHouses list
+        auctionHouses.add(auctionHouse);
+    }
 
     //getter for auctionHouses
-//    public List<AuctionHouse> getAuctionHouses() {
-//        // returns the list of auction houses
-//        return auctionHouses;
-//    }
+    public List<AuctionHouse> getAuctionHouses() {
+        // returns the list of auction houses
+        return auctionHouses;
+    }
 
     public boolean transfer(String fromAccountName, String toAccountName, double amount) throws InsufficientFundsException {
         // transfers the specified amount from one account to another
