@@ -1,6 +1,4 @@
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -87,7 +85,7 @@ public class Bank implements Runnable{
     }
     public void run() {
         try(ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Bank server is running on port " + port);
+            System.out.println("Bank server socket created: " + serverSocket.toString());
             running = true;
             while (running) {
                 Socket clientSocket = serverSocket.accept();
@@ -102,14 +100,14 @@ public class Bank implements Runnable{
     private class BankWorker implements Runnable {
 
         private Socket clientSocket;
-        private ObjectInputStream in;
-        private ObjectOutputStream out;
+        private DataInputStream in;
+        private DataOutputStream out;
 
         public BankWorker(Socket clientSocket) {
             this.clientSocket = clientSocket;
             try {
-                this.in = new ObjectInputStream(clientSocket.getInputStream());
-                this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+                this.in = new DataInputStream(clientSocket.getInputStream());
+                this.out = new DataOutputStream(clientSocket.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,16 +115,13 @@ public class Bank implements Runnable{
 
         public void run() {
             try {
-                while (true) {
+                //while (true) {
                     // read the incoming message from the client
-                    System.out.println(in.readObject());
-
+                    System.out.println(in.readUTF());
                     // process the message and send a response
-                    out.writeObject(true);
-                }
+                    //out.writeObject(true);
+                //}
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             } finally {
                 try {

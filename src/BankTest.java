@@ -3,7 +3,7 @@ import java.io.IOException;
 public class BankTest {
 
     public void testOpenAccount() throws IOException {
-        Bank bank = new Bank(6060);
+        Bank bank = new Bank(62952);
         Thread bankThread = new Thread(bank);
         bankThread.start();
         AuctionHouse house = new AuctionHouse();
