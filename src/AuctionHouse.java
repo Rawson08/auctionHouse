@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,29 +25,29 @@ public class AuctionHouse {
     }
 
 
-    private class AuctionHouseWorker implements Runnable {
-
-        private Socket clientSocket;
-        private ObjectInputStream in;
-        private ObjectOutputStream out;
-
-        public AuctionHouseWorker(Socket clientSocket) {
-            this.clientSocket = clientSocket;
-            try {
-                this.in = new ObjectInputStream(clientSocket.getInputStream());
-                this.out = new ObjectOutputStream(clientSocket.getOutputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void run() {
+//    private class AuctionHouseWorker implements Runnable {
+//
+//        private Socket clientSocket;
+//        private ObjectInputStream in;
+//        private ObjectOutputStream out;
+//
+//        public AuctionHouseWorker(Socket clientSocket) {
+//            this.clientSocket = clientSocket;
 //            try {
-//                // TODO: handle client requests
-//            } catch (IOException | ClassNotFoundException e) {
+//                this.in = new ObjectInputStream(clientSocket.getInputStream());
+//                this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+//            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-        }
-    }
+//        }
+//
+//        @Override
+//        public void run() {
+////            try {
+////                // TODO: handle client requests
+////            } catch (IOException | ClassNotFoundException e) {
+////                e.printStackTrace();
+////            }
+//        }
+//    }
 }

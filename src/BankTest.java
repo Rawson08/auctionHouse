@@ -2,7 +2,7 @@ public class BankTest {
 
     public void testOpenAccount() {
         Bank bank = new Bank(6060);
-        bank.run();
+        //bank.run();
         String accountName = "John Doe";
         double initialBalance = 100.0;
         String accountNumber = bank.createAccount(accountName, initialBalance);
@@ -26,7 +26,7 @@ public class BankTest {
 
     public void testDeposit() {
         Bank bank = new Bank(6060);
-        bank.run();
+        //bank.run();
         String accountName = "Jane Smith";
         double initialBalance = 0.0;
         String accountNumber = bank.createAccount(accountName, initialBalance);
@@ -45,7 +45,7 @@ public class BankTest {
 
     public void testWithdraw() throws Bank.InsufficientFundsException {
         Bank bank = new Bank(6060);
-        bank.run();
+        //bank.run();
         String accountName = "Bob Johnson";
         double initialBalance = 100.0;
         String accountNumber = bank.createAccount(accountName, initialBalance);
@@ -64,7 +64,7 @@ public class BankTest {
 
     public void testTransfer() throws Bank.InsufficientFundsException {
         Bank bank = new Bank(6060);
-        bank.run();
+        //bank.run();
         bank.createAccount("account1", 100);
         bank.createAccount("account2", 100);
         bank.transfer("account1", "account2", 100);
