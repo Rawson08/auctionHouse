@@ -1,53 +1,53 @@
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.net.Socket;
 /**
  * represents an auction house that contains a list of Items to be bid on
  *  and bids made on the items
  */
 public class AuctionHouse {
 
-    private int port;
     //will hold a list of items up for auction
     private List<Item> items;
     //list of bids in auction house
     private List<Bid> bids;
 
-    public AuctionHouse(int port) {
-        this.port = port;
+    //tests
+    private final String BANK_IP = "localhost";
+    private final int BANK_PORT = 6060;
+
+
+    public AuctionHouse() {
         this.items = new ArrayList<>();
-        //TODO: decide if we will track all bids or if we will just need to keep the highest bid
         this.bids = new ArrayList<>();
     }
 
+    // Connect to Bank server
+    public void connectToBank() throws IOException {
+        Socket socket = new Socket(BANK_IP, BANK_PORT);
+        //TODO work out why it gets stuck here
+        ObjectInputStream in =new ObjectInputStream(socket.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 
-//    private class AuctionHouseWorker implements Runnable {
-//
-//        private Socket clientSocket;
-//        private ObjectInputStream in;
-//        private ObjectOutputStream out;
-//
-//        public AuctionHouseWorker(Socket clientSocket) {
-//            this.clientSocket = clientSocket;
-//            try {
-//                this.in = new ObjectInputStream(clientSocket.getInputStream());
-//                this.out = new ObjectOutputStream(clientSocket.getOutputStream());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        @Override
-//        public void run() {
-////            try {
-////                // TODO: handle client requests
-////            } catch (IOException | ClassNotFoundException e) {
-////                e.printStackTrace();
-////            }
-//        }
-//    }
+        // Send a test message to the Bank server
+        out.writeChars("Hello from the Auction House");
+
+        // Receive response from the Bank server
+        String response = in.readLine();
+        System.out.println("Received message from Bank server: " + response);
+
+        // Close the socket connection
+        socket.close();
+    }
+
+    // Add an item to the auction house
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
+
+    // Place a bid on an item in the auction house
+    public void placeBid(Item item, Bid bid) {
+        // TODO: Implement the logic for placing a bid
+    }
 }

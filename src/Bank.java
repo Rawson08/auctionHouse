@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Bank {
+public class Bank implements Runnable{
 
     // instance variables
     private Map<String, Account> accounts;
@@ -93,6 +93,7 @@ public class Bank {
                 Socket clientSocket = serverSocket.accept();
                 Thread thread = new Thread(new BankWorker(clientSocket));
                 thread.start();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,11 +119,15 @@ public class Bank {
             try {
                 while (true) {
                     // read the incoming message from the client
-
+                    System.out.println(in.readObject());
 
                     // process the message and send a response
-
+                    out.writeObject(true);
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
             } finally {
                 try {
                     clientSocket.close();
@@ -131,6 +136,8 @@ public class Bank {
                 }
             }
         }
+
+
     }
 
 
