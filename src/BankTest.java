@@ -4,8 +4,8 @@ public class BankTest {
 
     public void testOpenAccount() throws IOException {
         Bank bank = new Bank(62952);
-        Thread bankThread = new Thread(bank);
-        bankThread.start();
+        //Thread bankThread = new Thread(bank);
+        //bankThread.start();
         AuctionHouse house = new AuctionHouse();
         house.connectToBank();
 
@@ -31,7 +31,10 @@ public class BankTest {
     }
 
     public static void main(String[] args) throws Bank.InsufficientFundsException, IOException {
-        BankTest test = new BankTest();
-        test.testOpenAccount();
+        Bank bank = new Bank(62952);
+        //Thread bankThread = new Thread(bank);
+        //bankThread.start();
+        AuctionHouse house = new AuctionHouse();
+        house.connectToBank();
     }
 }

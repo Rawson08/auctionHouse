@@ -15,7 +15,7 @@ public class AuctionHouse {
 
     //tests
     private final String BANK_IP = "localhost";
-    private final int BANK_PORT = 62952;
+    private final int BANK_PORT = 6060;
 
 
     public AuctionHouse() {
@@ -28,8 +28,8 @@ public class AuctionHouse {
         Socket socket = new Socket(BANK_IP, BANK_PORT);
         System.out.println(socket.toString());
         //TODO work out why it gets stuck here
-        DataInputStream in =new DataInputStream(socket.getInputStream());
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+        ObjectInputStream in =new ObjectInputStream(socket.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 
         // Send a test message to the Bank server
         out.writeChars("Hello from the Auction House");

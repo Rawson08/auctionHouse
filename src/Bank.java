@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -6,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Bank implements Runnable{
+public class Bank {
 
     // instance variables
     private Map<String, Account> accounts;
@@ -25,7 +26,10 @@ public class Bank implements Runnable{
         this.agents = new ArrayList<>();
         this.running = false;
     }
-
+    public static void main(String[] args) throws IOException {
+        Bank bank = new Bank(6060);
+        bank.run();
+    }
     // methods
     public String createAccount(String name, double initialBalance) {
         // creates a new account and adds it to the accounts map
@@ -84,7 +88,7 @@ public class Bank implements Runnable{
         return null;
     }
     public void run() {
-        try(ServerSocket serverSocket = new ServerSocket(port)) {
+        try(ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getLocalHost())) {
             System.out.println("Bank server socket created: " + serverSocket.toString());
             running = true;
             while (running) {
@@ -100,14 +104,14 @@ public class Bank implements Runnable{
     private class BankWorker implements Runnable {
 
         private Socket clientSocket;
-        private DataInputStream in;
-        private DataOutputStream out;
+        private BufferedReader in;
+        private PrintWriter out;
 
         public BankWorker(Socket clientSocket) {
             this.clientSocket = clientSocket;
             try {
-                this.in = new DataInputStream(clientSocket.getInputStream());
-                this.out = new DataOutputStream(clientSocket.getOutputStream());
+                this.in = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
+                this.out = new PrintWriter(clientSocket.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -115,12 +119,10 @@ public class Bank implements Runnable{
 
         public void run() {
             try {
-                //while (true) {
                     // read the incoming message from the client
-                    System.out.println(in.readUTF());
+                    System.out.println(in.readLine());
                     // process the message and send a response
                     //out.writeObject(true);
-                //}
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
