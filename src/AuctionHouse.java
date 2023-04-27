@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.Socket;
@@ -14,8 +15,8 @@ public class AuctionHouse {
     private List<Bid> bids;
 
     //tests
-    private final String BANK_IP = "localhost";
-    private final int BANK_PORT = 6060;
+    private String bankIP = "localhost";
+    private int bankPort = 6061;
 
 
     public AuctionHouse() {
@@ -25,21 +26,22 @@ public class AuctionHouse {
 
     // Connect to Bank server
     public void connectToBank() throws IOException {
-        Socket socket = new Socket(BANK_IP, BANK_PORT);
-        System.out.println(socket.toString());
-        //TODO work out why it gets stuck here
-        ObjectInputStream in =new ObjectInputStream(socket.getInputStream());
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        Socket clientSocket = new Socket(InetAddress.getLocalHost(), bankPort);
+        System.out.println("AuctionHouse client: " + clientSocket);
+        BufferedReader in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
 
         // Send a test message to the Bank server
-        out.writeChars("Hello from the Auction House");
+        out.println("Test message from AuctionHouse");
+        out.flush();
+        System.out.println("sent message");
 
         // Receive response from the Bank server
         String response = in.readLine();
         System.out.println("Received message from Bank server: " + response);
 
         // Close the socket connection
-        socket.close();
+        clientSocket.close();
     }
 
     // Add an item to the auction house
@@ -50,5 +52,10 @@ public class AuctionHouse {
     // Place a bid on an item in the auction house
     public void placeBid(Item item, Bid bid) {
         // TODO: Implement the logic for placing a bid
+    }
+
+    public static void main(String[] args) throws IOException {
+        AuctionHouse a = new AuctionHouse();
+        a.connectToBank();
     }
 }

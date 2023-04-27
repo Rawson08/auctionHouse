@@ -27,7 +27,7 @@ public class Bank {
         this.running = false;
     }
     public static void main(String[] args) throws IOException {
-        Bank bank = new Bank(6060);
+        Bank bank = new Bank(6061);
         bank.run();
     }
     // methods
@@ -100,6 +100,7 @@ public class Bank {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     private class BankWorker implements Runnable {
 
@@ -122,7 +123,8 @@ public class Bank {
                     // read the incoming message from the client
                     System.out.println(in.readLine());
                     // process the message and send a response
-                    //out.writeObject(true);
+                    out.println("Message Received");
+                    out.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
