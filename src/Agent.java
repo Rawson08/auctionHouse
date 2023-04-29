@@ -14,7 +14,7 @@ public class Agent {
         this.balance = balance;
         this.bank = bank;
         this.auctionHouses = new ArrayList<>();
-        this.accountName = bank.createAccount(name, balance);
+        this.accountName = bank.createAccount(balance);
     }
 
     public void connectToAuctionHouse(AuctionHouse auctionHouse) {

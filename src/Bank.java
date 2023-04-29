@@ -2,12 +2,10 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Bank {
+    public static Bank bank = new Bank(6061);
 
     // instance variables
     private Map<String, Account> accounts;
@@ -27,14 +25,24 @@ public class Bank {
         this.running = false;
     }
     public static void main(String[] args) throws IOException {
-        Bank bank = new Bank(6061);
         bank.run();
     }
     // methods
-    public String createAccount(String name, double initialBalance) {
+
+    /**
+     * creates an account with an initial balance
+     * @param initialBalance
+     * @return String account name to send to client
+     */
+    public String createAccount(double initialBalance) {
         // creates a new account and adds it to the accounts map
-        Account account = new Account(name, initialBalance);
-        accounts.put(name,account);
+        Random rand = new Random();
+        String accountNumber = String.valueOf(rand.nextInt(0, 10000));
+        while(accounts.containsKey(accountNumber)){
+            accountNumber = String.valueOf(rand.nextInt());
+        }
+            Account account = new Account(accountNumber, initialBalance);
+            accounts.put(accountNumber, account);
         // returns the account name
         return account.getName();
     }
@@ -112,19 +120,27 @@ public class Bank {
             this.clientSocket = clientSocket;
             try {
                 this.in = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
-                this.out = new PrintWriter(clientSocket.getOutputStream());
+                this.out = new PrintWriter(clientSocket.getOutputStream(), true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         public void run() {
+            String messageIn = "";
+            String accountNumber = "";
             try {
                     // read the incoming message from the client
-                    System.out.println(in.readLine());
+                    messageIn = in.readLine();
                     // process the message and send a response
-                    out.println("Message Received");
-                    out.flush();
+                System.out.println("the message to bank: " + messageIn);
+                switch (messageIn){
+                    case "CREATE_ACCOUNT" -> {
+                        accountNumber = bank.createAccount(10000);
+                        out.println(accountNumber);
+                    }
+                }
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {

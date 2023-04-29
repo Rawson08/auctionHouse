@@ -7,7 +7,7 @@ public class BankTest {
         //Thread bankThread = new Thread(bank);
         //bankThread.start();
         AuctionHouse house = new AuctionHouse();
-        house.connectToBank();
+        //house.connectToBank();
 
 //        accountName = "John Doe";
 //        double initialBalance = 100.0;
@@ -35,6 +35,6 @@ public class BankTest {
         //Thread bankThread = new Thread(bank);
         //bankThread.start();
         AuctionHouse house = new AuctionHouse();
-        house.connectToBank();
+        //house.connectToBank();
     }
 }
