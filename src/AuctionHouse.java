@@ -12,6 +12,11 @@ import java.util.Scanner;
 public class AuctionHouse {
 
     private String accountNumber;
+
+    public List<Item> getItems() {
+        return items;
+    }
+
     //will hold a list of items up for auction
     private List<Item> items;
     //list of bids in auction house
