@@ -8,7 +8,7 @@
 
     @Override
     public String toString() {
-        return String.format("%s bid $%.2f on %s", bidder.getName(), amount, item.name());
+        return String.format("%s bid $%.2f on %s", bidder.getAccountName(), amount, item.name());
     }
 }
 

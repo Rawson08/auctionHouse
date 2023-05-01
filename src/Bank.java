@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class Bank {
-    public static Bank bank = new Bank(6061);
+    private static Bank bank = new Bank(6061);
 
     // instance variables
     private Map<String, Account> accounts;
@@ -137,7 +137,10 @@ public class Bank {
                 switch (messageIn){
                     case "CREATE_ACCOUNT" -> {
                         accountNumber = bank.createAccount(10000);
-                        out.println(accountNumber);
+                        out.println("account number:" + accountNumber);
+                    }
+                    case "GET_AUCTIONS" -> {
+
                     }
                 }
 

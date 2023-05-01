@@ -1,20 +1,34 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Agent {
-
-    private String name;
-    private double balance;
-    private String accountName;
-    private Bank bank;
+    private double currentBalance;
+    private String accountNumber;
     private List<AuctionHouse> auctionHouses;
+    private Socket clientSocket;
+    private BufferedReader in;
+    private PrintWriter out;
 
-    public Agent(String name, double balance, Bank bank) {
-        this.name = name;
-        this.balance = balance;
-        this.bank = bank;
+    public Agent() {
+        this.currentBalance = currentBalance;
         this.auctionHouses = new ArrayList<>();
-        this.accountName = bank.createAccount(balance);
+        this.accountNumber = accountNumber;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Agent a = new Agent();
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+        a.connectToBank(hostname, port);
     }
 
     public void connectToAuctionHouse(AuctionHouse auctionHouse) {
@@ -29,16 +43,12 @@ public class Agent {
         // Place a bid on the given item at the given auction house
     }
 
-    public String getName() {
-        return name;
-    }
-
     public double getBalance() {
-        return balance;
+        return currentBalance;
     }
 
     public String getAccountName() {
-        return accountName;
+        return accountNumber;
     }
 
     public List<AuctionHouse> getAuctionHouses() {
@@ -46,9 +56,26 @@ public class Agent {
     }
 
     public void setBalance(double balance) {
-        this.balance = balance;
+        this.currentBalance = balance;
     }
 
-    // Other methods as needed
+    public void connectToBank(String hostname, int port) throws IOException {
+        clientSocket = new Socket(hostname, port);
+        System.out.println("AuctionHouse client: " + clientSocket);
+        in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+        // Send a new account request to the Bank server
+        out.println("CREATE_ACCOUNT");
+
+        // Receive response from the Bank server
+        String response = in.readLine();
+        this.accountNumber = response;
+        System.out.println("Received message from Bank server: " + response);
+
+        //get list of available auction houses from bank
+        out.println("GET_AUCTIONS");
+
+    }
 }
 
