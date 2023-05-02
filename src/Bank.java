@@ -11,7 +11,7 @@ public class Bank {
     private Map<String, Account> accounts;
 
     //possible list for auctionHouses class
-    private List<AuctionHouse> auctionHouses;
+    private Map<String, String> auctionHouses;
     private List<Agent> agents;
     private int port;
     private boolean running;
@@ -20,7 +20,7 @@ public class Bank {
     public Bank(int port) {
         this.port = port;
         this.accounts = new HashMap<>();
-        this.auctionHouses = new ArrayList<>();
+        this.auctionHouses = new HashMap<>();
         this.agents = new ArrayList<>();
         this.running = false;
     }
@@ -48,13 +48,13 @@ public class Bank {
     }
 
     //this class adds an auction house to the bank
-    public void addAuctionHouse(AuctionHouse auctionHouse) {
+    public void addAuctionHouse(String auctionName, String auctionAddress) {
         // adds the auction house to the auctionHouses list
-        auctionHouses.add(auctionHouse);
+        //auctionHouses.put(auctionName, );
     }
 
     //getter for auctionHouses
-    public List<AuctionHouse> getAuctionHouses() {
+    public Map<String, String> getAuctionHouses() {
         // returns the list of auction houses
         return auctionHouses;
     }
@@ -127,7 +127,7 @@ public class Bank {
         }
 
         public void run() {
-            String messageIn = "";
+            String messageIn;
             String accountNumber = "";
             try {
                     // read the incoming message from the client
@@ -141,6 +141,13 @@ public class Bank {
                     }
                     case "GET_AUCTIONS" -> {
 
+                    }
+                    case "CREATE_AUCTION" ->{
+                        String auction = bank.createAccount(1000);
+                        out.println(auction);
+                        String address = in.readLine();
+                        addAuctionHouse(auction, address);
+                        out.println("created account at: " + address);
                     }
                 }
 

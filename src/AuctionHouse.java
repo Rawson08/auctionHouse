@@ -40,11 +40,12 @@ public class AuctionHouse {
         out = new PrintWriter(clientSocket.getOutputStream(), true);
 
         // Send a new account request to the Bank server
-        out.println("CREATE_ACCOUNT");
-
+        out.println("CREATE_AUCTION");
         // Receive response from the Bank server
         String response = in.readLine();
         this.accountNumber = response;
+        out.println(clientSocket.getInetAddress());
+        response = in.readLine();
         System.out.println("Received message from Bank server: " + response);
     }
     public void closeConnection() throws IOException {
