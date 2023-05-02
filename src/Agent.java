@@ -61,7 +61,6 @@ public class Agent {
 
     public void connectToBank(String hostname, int port) throws IOException {
         clientSocket = new Socket(hostname, port);
-        System.out.println("AuctionHouse client: " + clientSocket);
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
 
