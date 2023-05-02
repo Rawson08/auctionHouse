@@ -74,7 +74,10 @@ public class Agent {
 
         //get list of available auction houses from bank
         out.println("GET_AUCTIONS");
-
+        String auctionsString;
+        auctionsString = in.readLine();
+        System.out.println("auctions available: " + auctionsString);
+        out.println("END");
     }
 }
 

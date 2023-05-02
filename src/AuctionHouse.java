@@ -51,6 +51,7 @@ public class AuctionHouse implements Runnable {
         out.println(clientSocket.getInetAddress());
         response = in.readLine();
         System.out.println("Received message from Bank server: " + response);
+        out.println("END");
     }
     public void closeConnection() throws IOException {
         // Close the BufferedReader, PrintWriter, and Socket objects
@@ -87,12 +88,22 @@ public class AuctionHouse implements Runnable {
             Boolean running = true;
             while (running) {
                 Socket clientSocket = serverSocket.accept();
-                //Thread thread = new Thread(new Bank.BankWorker(clientSocket));
-                //thread.start();
+                Thread thread = new Thread(new AuctionHouse.AuctionWorker(clientSocket));
+                thread.start();
 
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public class AuctionWorker implements Runnable {
+        public AuctionWorker(Socket clientSocket) {
+        }
+
+        @Override
+        public void run() {
+
         }
     }
 }
