@@ -1,4 +1,6 @@
 import java.io.*;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.Socket;
@@ -8,8 +10,9 @@ import java.util.Scanner;
  * represents an auction house that contains a list of Items to be bid on
  *  and bids made on the items
  */
-public class AuctionHouse {
+public class AuctionHouse implements Runnable {
     private String accountNumber;
+    private static int auctionPort = 8000;
 
     public List<Item> getItems() {
         return items;
@@ -30,6 +33,7 @@ public class AuctionHouse {
     public AuctionHouse() {
         this.items = new ArrayList<>();
         this.bids = new ArrayList<>();
+        this.auctionPort = ++auctionPort;
     }
 
     // Connect to Bank server
@@ -73,5 +77,22 @@ public class AuctionHouse {
         int port = systemIn.nextInt();
         AuctionHouse a = new AuctionHouse();
         a.connectToBank(hostname, port);
+        a.run();
+    }
+
+    @Override
+    public void run() {
+        try(ServerSocket serverSocket = new ServerSocket(auctionPort, 50, InetAddress.getLocalHost())) {
+            System.out.println("Auction server socket created: " + serverSocket.toString());
+            Boolean running = true;
+            while (running) {
+                Socket clientSocket = serverSocket.accept();
+                //Thread thread = new Thread(new Bank.BankWorker(clientSocket));
+                //thread.start();
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
