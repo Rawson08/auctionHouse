@@ -18,7 +18,6 @@ public class Agent {
     public Agent() {
         this.currentBalance = currentBalance;
         this.auctionHouses = new ArrayList<>();
-        this.accountNumber = accountNumber;
     }
 
     public static void main(String[] args) throws IOException {
