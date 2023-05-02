@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.*;
 
 public class Bank {
-    private static Bank bank = new Bank(6061);
+    private static Bank bank = new Bank(8000);
 
     // instance variables
     private Map<String, Account> accounts;

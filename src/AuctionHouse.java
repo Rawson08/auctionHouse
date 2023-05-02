@@ -77,7 +77,7 @@ public class AuctionHouse implements Runnable {
         int port = systemIn.nextInt();
         AuctionHouse a = new AuctionHouse();
         a.connectToBank(hostname, port);
-        a.run();
+        //a.run();
     }
 
     @Override
