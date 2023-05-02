@@ -4,7 +4,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-public class Bank {
+public class Bank{
     private static Bank bank = new Bank(8000);
 
     // instance variables
@@ -50,7 +50,8 @@ public class Bank {
     //this class adds an auction house to the bank
     public void addAuctionHouse(String auctionName, String auctionAddress) {
         // adds the auction house to the auctionHouses list
-        //auctionHouses.put(auctionName, );
+        auctionHouses.put(auctionName,auctionAddress);
+        System.out.println("added auction house");
     }
 
     //getter for auctionHouses
@@ -132,33 +133,30 @@ public class Bank {
             try {
                     // read the incoming message from the client
                     messageIn = in.readLine();
-                    // process the message and send a response
-                System.out.println("the message to bank: " + messageIn);
-                switch (messageIn){
-                    case "CREATE_ACCOUNT" -> {
-                        accountNumber = bank.createAccount(10000);
-                        out.println("account number:" + accountNumber);
+                    while(!messageIn.equals("END")) {
+                        // process the message and send a response
+                        System.out.println("the message to bank: " + messageIn);
+                        switch (messageIn) {
+                            case "CREATE_ACCOUNT" -> {
+                                accountNumber = bank.createAccount(10000);
+                                out.println("account number:" + accountNumber);
+                            }
+                            case "GET_AUCTIONS" -> {
+                                out.println(auctionHouses);
+                                System.out.println("sent auctions: " + auctionHouses);
+                            }
+                            case "CREATE_AUCTION" -> {
+                                String auction = bank.createAccount(1000);
+                                out.println(auction);
+                                String address = in.readLine();
+                                addAuctionHouse(auction, address);
+                                out.println("created account at: " + address);
+                            }
+                        }
+                        messageIn = in.readLine();
                     }
-                    case "GET_AUCTIONS" -> {
-
-                    }
-                    case "CREATE_AUCTION" ->{
-                        String auction = bank.createAccount(1000);
-                        out.println(auction);
-                        String address = in.readLine();
-                        addAuctionHouse(auction, address);
-                        out.println("created account at: " + address);
-                    }
-                }
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } finally {
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
 
