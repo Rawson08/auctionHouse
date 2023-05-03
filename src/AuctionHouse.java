@@ -12,7 +12,8 @@ import java.util.Scanner;
  */
 public class AuctionHouse implements Runnable {
     private String accountNumber;
-    private static int auctionPort = 8000;
+    private int auctionPort = 8000;
+    private String auctionName;
 
     public List<Item> getItems() {
         return items;
@@ -22,10 +23,6 @@ public class AuctionHouse implements Runnable {
     private List<Item> items;
     //list of bids in auction house
     private List<Bid> bids;
-
-    //tests
-    private String bankIP = "localhost";
-    private int bankPort = 6061;
     private Socket clientSocket;
     private BufferedReader in;
     private PrintWriter out;
@@ -33,11 +30,17 @@ public class AuctionHouse implements Runnable {
     public AuctionHouse() {
         this.items = new ArrayList<>();
         this.bids = new ArrayList<>();
-        this.auctionPort = ++auctionPort;
     }
 
     // Connect to Bank server
-    public void connectToBank(String hostname, int port) throws IOException {
+    public void connectToBank(String auctionName, int auctionPort) throws IOException {
+
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+
         clientSocket = new Socket(hostname, port);
         System.out.println("AuctionHouse client: " + clientSocket);
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -51,7 +54,7 @@ public class AuctionHouse implements Runnable {
         // Receive response from the Bank server
         String response = in.readLine();
         this.accountNumber = response;
-        out.println(clientSocket.getInetAddress());
+        out.println(auctionName + " : " + this.auctionPort);
         response = in.readLine();
         System.out.println("Received message from Bank server: " + response);
         out.println("END");
@@ -78,6 +81,11 @@ public class AuctionHouse implements Runnable {
     public void run() {
         try(ServerSocket serverSocket = findGoodPort()) {
             System.out.println("Auction server socket created: " + serverSocket.toString());
+            this.auctionName = serverSocket.getInetAddress().getHostName();
+            this.auctionPort = serverSocket.getLocalPort();
+            //connects to bank via console input
+            connectToBank(this.auctionName, this.auctionPort);
+
             Boolean running = true;
             while (running) {
                 Socket clientSocket = serverSocket.accept();
@@ -123,13 +131,7 @@ public class AuctionHouse implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
-        Scanner systemIn = new Scanner(System.in);
-        System.out.println("enter bank hostname:");
-        String hostname = systemIn.nextLine();
-        System.out.println("enter bank port: ");
-        int port = systemIn.nextInt();
         AuctionHouse a = new AuctionHouse();
-        a.connectToBank(hostname, port);
         a.run();
     }
 }
