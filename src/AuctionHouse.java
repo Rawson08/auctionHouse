@@ -42,7 +42,10 @@ public class AuctionHouse implements Runnable {
         System.out.println("AuctionHouse client: " + clientSocket);
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-
+        //add three items to auction list
+        addItem(Item.ps5);
+        addItem(Item.xbox);
+        addItem(Item.iPhone);
         // Send a new account request to the Bank server
         out.println("CREATE_AUCTION");
         // Receive response from the Bank server
@@ -53,6 +56,7 @@ public class AuctionHouse implements Runnable {
         System.out.println("Received message from Bank server: " + response);
         out.println("END");
     }
+
     public void closeConnection() throws IOException {
         // Close the BufferedReader, PrintWriter, and Socket objects
         in.close();
