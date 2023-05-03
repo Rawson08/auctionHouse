@@ -83,7 +83,7 @@ public class AuctionHouse implements Runnable {
 
     @Override
     public void run() {
-        try(ServerSocket serverSocket = new ServerSocket(auctionPort, 50, InetAddress.getLocalHost())) {
+        try(ServerSocket serverSocket = findGoodPort()) {
             System.out.println("Auction server socket created: " + serverSocket.toString());
             Boolean running = true;
             while (running) {
@@ -105,5 +105,22 @@ public class AuctionHouse implements Runnable {
         public void run() {
 
         }
+    }
+
+    public ServerSocket findGoodPort() throws IOException {
+        int[] ports = new int[1000];
+        for(int i = 8000; i < 9000; i++){
+            ports[i - 8000] = i;
+        }
+        for (int port : ports) {
+            try {
+                return new ServerSocket(port, 50, InetAddress.getLocalHost());
+            } catch (IOException ex) {
+                continue; // try next port
+            }
+        }
+
+        // if the program gets here, no port in the range was found
+        throw new IOException("no free port found");
     }
 }
