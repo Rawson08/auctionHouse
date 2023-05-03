@@ -70,17 +70,6 @@ public class AuctionHouse implements Runnable {
         // TODO: Implement the logic for placing a bid
     }
 
-    public static void main(String[] args) throws IOException {
-        Scanner systemIn = new Scanner(System.in);
-        System.out.println("enter bank hostname:");
-        String hostname = systemIn.nextLine();
-        System.out.println("enter bank port: ");
-        int port = systemIn.nextInt();
-        AuctionHouse a = new AuctionHouse();
-        a.connectToBank(hostname, port);
-        a.run();
-    }
-
     @Override
     public void run() {
         try(ServerSocket serverSocket = findGoodPort()) {
@@ -107,6 +96,11 @@ public class AuctionHouse implements Runnable {
         }
     }
 
+    /**
+     * finds an open port for the server.
+     * @return Serversocket with open port
+     * @throws IOException if no open ports are available
+     */
     public ServerSocket findGoodPort() throws IOException {
         int[] ports = new int[1000];
         for(int i = 8000; i < 9000; i++){
@@ -122,5 +116,16 @@ public class AuctionHouse implements Runnable {
 
         // if the program gets here, no port in the range was found
         throw new IOException("no free port found");
+    }
+
+    public static void main(String[] args) throws IOException {
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+        AuctionHouse a = new AuctionHouse();
+        a.connectToBank(hostname, port);
+        a.run();
     }
 }
