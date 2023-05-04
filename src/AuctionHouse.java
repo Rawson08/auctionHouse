@@ -12,7 +12,8 @@ import java.util.Scanner;
  */
 public class AuctionHouse implements Runnable {
     private String accountNumber;
-    private static int auctionPort = 8000;
+    private int auctionPort = 8000;
+    private String auctionName;
 
     public List<Item> getItems() {
         return items;
@@ -22,10 +23,6 @@ public class AuctionHouse implements Runnable {
     private List<Item> items;
     //list of bids in auction house
     private List<Bid> bids;
-
-    //tests
-    private String bankIP = "localhost";
-    private int bankPort = 6061;
     private Socket clientSocket;
     private BufferedReader in;
     private PrintWriter out;
@@ -33,26 +30,36 @@ public class AuctionHouse implements Runnable {
     public AuctionHouse() {
         this.items = new ArrayList<>();
         this.bids = new ArrayList<>();
-        this.auctionPort = ++auctionPort;
     }
 
     // Connect to Bank server
-    public void connectToBank(String hostname, int port) throws IOException {
+    public void connectToBank(String auctionName, int auctionPort) throws IOException {
+
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+
         clientSocket = new Socket(hostname, port);
         System.out.println("AuctionHouse client: " + clientSocket);
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
-
+        //add three items to auction list
+        addItem(Item.ps5);
+        addItem(Item.xbox);
+        addItem(Item.iPhone);
         // Send a new account request to the Bank server
         out.println("CREATE_AUCTION");
         // Receive response from the Bank server
         String response = in.readLine();
         this.accountNumber = response;
-        out.println(clientSocket.getInetAddress());
+        out.println(auctionName + " : " + this.auctionPort);
         response = in.readLine();
         System.out.println("Received message from Bank server: " + response);
         out.println("END");
     }
+
     public void closeConnection() throws IOException {
         // Close the BufferedReader, PrintWriter, and Socket objects
         in.close();
@@ -70,21 +77,15 @@ public class AuctionHouse implements Runnable {
         // TODO: Implement the logic for placing a bid
     }
 
-    public static void main(String[] args) throws IOException {
-        Scanner systemIn = new Scanner(System.in);
-        System.out.println("enter bank hostname:");
-        String hostname = systemIn.nextLine();
-        System.out.println("enter bank port: ");
-        int port = systemIn.nextInt();
-        AuctionHouse a = new AuctionHouse();
-        a.connectToBank(hostname, port);
-        a.run();
-    }
-
     @Override
     public void run() {
-        try(ServerSocket serverSocket = new ServerSocket(auctionPort, 50, InetAddress.getLocalHost())) {
+        try(ServerSocket serverSocket = findGoodPort()) {
             System.out.println("Auction server socket created: " + serverSocket.toString());
+            this.auctionName = serverSocket.getInetAddress().getHostName();
+            this.auctionPort = serverSocket.getLocalPort();
+            //connects to bank via console input
+            connectToBank(this.auctionName, this.auctionPort);
+
             Boolean running = true;
             while (running) {
                 Socket clientSocket = serverSocket.accept();
@@ -105,5 +106,32 @@ public class AuctionHouse implements Runnable {
         public void run() {
 
         }
+    }
+
+    /**
+     * finds an open port for the server.
+     * @return Serversocket with open port
+     * @throws IOException if no open ports are available
+     */
+    public ServerSocket findGoodPort() throws IOException {
+        int[] ports = new int[1000];
+        for(int i = 8000; i < 9000; i++){
+            ports[i - 8000] = i;
+        }
+        for (int port : ports) {
+            try {
+                return new ServerSocket(port, 50, InetAddress.getLocalHost());
+            } catch (IOException ex) {
+                continue; // try next port
+            }
+        }
+
+        // if the program gets here, no port in the range was found
+        throw new IOException("no free port found");
+    }
+
+    public static void main(String[] args) throws IOException {
+        AuctionHouse a = new AuctionHouse();
+        a.run();
     }
 }

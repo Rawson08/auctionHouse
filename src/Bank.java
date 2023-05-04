@@ -44,7 +44,7 @@ public class Bank{
             Account account = new Account(accountNumber, initialBalance);
             accounts.put(accountNumber, account);
         // returns the account name
-        return account.getName();
+        return account.getAccountNumber();
     }
 
     //this class adds an auction house to the bank
@@ -142,15 +142,15 @@ public class Bank{
                                 out.println("account number:" + accountNumber);
                             }
                             case "GET_AUCTIONS" -> {
-                                out.println(auctionHouses);
-                                System.out.println("sent auctions: " + auctionHouses);
+                                out.println(auctionHouses.values());
+                                System.out.println("sent auctions: " + auctionHouses.values());
                             }
                             case "CREATE_AUCTION" -> {
                                 String auction = bank.createAccount(1000);
                                 out.println(auction);
                                 String address = in.readLine();
                                 addAuctionHouse(auction, address);
-                                out.println("created account at: " + address);
+                                out.println(address);
                             }
                         }
                         messageIn = in.readLine();
@@ -167,13 +167,13 @@ public class Bank{
 
 
     public class Account {
-        private String name;
+        private String accountNumber;
         private double balance;
         private double blockedFunds;
 
 
         public Account(String name, double balance) {
-            this.name = name;
+            this.accountNumber = name;
             this.balance = balance;
             this.blockedFunds = 0;
         }
@@ -196,8 +196,8 @@ public class Bank{
             return amount;
         }
 
-        public String getName() {
-            return name;
+        public String getAccountNumber() {
+            return accountNumber;
         }
 
     }
