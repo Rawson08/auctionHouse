@@ -3,21 +3,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Agent {
     private double currentBalance;
     private String accountNumber;
-    private List<AuctionHouse> auctionHouses;
+    private Map<String, List<Integer>> auctionHouses;
     private Socket clientSocket;
     private BufferedReader in;
     private PrintWriter out;
 
     public Agent() {
         this.currentBalance = currentBalance;
-        this.auctionHouses = new ArrayList<>();
+        this.auctionHouses = new HashMap<>();
     }
 
     public static void main(String[] args) throws IOException {
@@ -50,7 +48,7 @@ public class Agent {
         return accountNumber;
     }
 
-    public List<AuctionHouse> getAuctionHouses() {
+    public Map<String, List<Integer>> getAuctionHouses() {
         return auctionHouses;
     }
 
@@ -74,8 +72,28 @@ public class Agent {
         //get list of available auction houses from bank
         out.println("GET_AUCTIONS");
         String auctionsString;
+
+        //receive and parse list of available auctions
         auctionsString = in.readLine();
-        System.out.println("auctions available: " + auctionsString);
+        auctionsString = auctionsString.replace("[", "").replace("]", "");
+        String[] pairs = auctionsString.split(", ");
+        for (String pair : pairs) {
+            // Split the pair into its key and value components
+            String[] components = pair.split(": ");
+            String key = components[0];
+            Integer value = Integer.parseInt(components[1]);
+            // Check if the key already exists in the map
+            if (auctionHouses.containsKey(key)) {
+                // If the key exists, add the value to its corresponding List
+                auctionHouses.get(key).add(value);
+            } else {
+                // If the key does not exist, create a new List and add the value
+                List<Integer> values = new ArrayList<>();
+                values.add(value);
+                auctionHouses.put(key, values);
+            }
+        }
+        System.out.println("auctions available: " + auctionHouses);
         out.println("END");
     }
 }
