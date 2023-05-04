@@ -26,10 +26,17 @@ public class Agent {
         System.out.println("enter bank port: ");
         int port = systemIn.nextInt();
         a.connectToBank(hostname, port);
+        a.connectToAuctionHouse();
     }
 
-    public void connectToAuctionHouse(AuctionHouse auctionHouse) {
+    public void connectToAuctionHouse() {
         // Connect to the given auction house and add it to the list of connected auction houses
+        Scanner sysin = new Scanner(System.in);
+        if(!auctionHouses.isEmpty()) {
+            System.out.println("Which auction would you like to connect to?");
+            int auctionSelected = sysin.nextInt();
+        }
+        else System.out.println("there are no Auctions available");
     }
 
     public void disconnectFromAuctionHouse(AuctionHouse auctionHouse) {
@@ -67,7 +74,7 @@ public class Agent {
         // Receive response from the Bank server
         String response = in.readLine();
         this.accountNumber = response;
-        System.out.println("Received message from Bank server: " + response);
+        System.out.println(response);
 
         //get list of available auction houses from bank
         out.println("GET_AUCTIONS");
@@ -93,8 +100,21 @@ public class Agent {
                 auctionHouses.put(key, values);
             }
         }
-        System.out.println("auctions available: " + auctionHouses);
+        System.out.println("auctions available: ");
+        printAuctions();
         out.println("END");
+    }
+
+    public void printAuctions(){
+        int i = 1;
+        for (Map.Entry<String, List<Integer>> entry : auctionHouses.entrySet()) {
+            String key = entry.getKey();
+            List<Integer> values = entry.getValue();
+            for (Integer value : values) {
+                System.out.println(i + ". location: " + key + " port: " + value);
+                i++;
+            }
+        }
     }
 }
 

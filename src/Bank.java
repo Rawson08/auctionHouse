@@ -139,7 +139,7 @@ public class Bank{
                         switch (messageIn) {
                             case "CREATE_ACCOUNT" -> {
                                 accountNumber = bank.createAccount(10000);
-                                out.println("account number:" + accountNumber);
+                                out.println(accountNumber);
                             }
                             case "GET_AUCTIONS" -> {
                                 out.println(auctionHouses.values());

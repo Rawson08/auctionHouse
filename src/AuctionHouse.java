@@ -104,7 +104,24 @@ public class AuctionHouse implements Runnable {
 
         @Override
         public void run() {
-
+            String messageIn;
+            int bid = 0;
+            try {
+                // read the incoming message from the client
+                messageIn = in.readLine();
+                while(!messageIn.equals("END")) {
+                    // process the message and send a response
+                    System.out.println("the message to auctionHouse: " + messageIn);
+                    switch (messageIn) {
+                        case "PLACE_BID" -> {
+                            out.println("How much would you like to bid?");
+                        }
+                    }
+                    messageIn = in.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
