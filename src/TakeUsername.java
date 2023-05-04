@@ -2,6 +2,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.VBox;
 
 public class TakeUsername extends VBox {
@@ -26,6 +27,16 @@ public class TakeUsername extends VBox {
 
         TextField userBalance = new TextField();
         userBalance.setPromptText("\uD83D\uDCB2 Amount");
+        TextFormatter<String> formatter = new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*(\\.\\d{0,2})?")) {
+                return change;
+            } else {
+                return null;
+            }
+        });
+
+        userBalance.setTextFormatter(formatter);
         styleText(userBalance);
         addChildren(userBalance);
 
@@ -34,7 +45,10 @@ public class TakeUsername extends VBox {
         submitButton.setFocusTraversable(false);
         submitButton.setStyle("-fx-base: #46b920; -fx-text-fill: white");
         submitButton.setDisable(userBalance.getText().equals("") && userName.getText().matches("^[0-9]+$"));
+        submitButton.setOnAction(event -> {
 
+            //TODO: Add event handler for the submit button, which will basically send the stored values to the agent
+        });
         addChildren(submitButton);
     }
 
