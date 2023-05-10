@@ -130,8 +130,35 @@ public class Agent {
     }
 
     //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
-    public class AgentWorker implements Runnable {
-        public AgentWorker (Socket clientSocket) {
+    //For Bank
+    public class AgentWorkerForBank implements Runnable {
+        public AgentWorkerForBank (Socket clientSocket) {
+        }
+        @Override
+        public void run() {
+            String messageIn;
+            int bid = 0;
+            try {
+                // read the incoming message from the client
+                messageIn = in.readLine();
+                while(!messageIn.equals("END")) {
+                    // process the message and send a response
+                    System.out.println("the message to auctionHouse: " + messageIn);
+                    switch (messageIn) {
+                        case "PLACE_BID" -> {
+                            out.println("How much would you like to bid?");
+                        }
+                    }
+                    messageIn = in.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public class AgentWorkerForAH implements Runnable {
+        public AgentWorkerForAH (Socket clientSocket) {
         }
 
         @Override
