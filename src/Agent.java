@@ -85,19 +85,19 @@ public class Agent {
         auctionsString = auctionsString.replace("[", "").replace("]", "");
         String[] pairs = auctionsString.split(", ");
         for (String pair : pairs) {
-            // Split the pair into its key and value components
+            // Split the pair into its hostName and value components
             String[] components = pair.split(": ");
-            String key = components[0];
+            String hostName = components[0];
             Integer value = Integer.parseInt(components[1]);
-            // Check if the key already exists in the map
-            if (auctionHouses.containsKey(key)) {
-                // If the key exists, add the value to its corresponding List
-                auctionHouses.get(key).add(value);
+            // Check if the hostName already exists in the map
+            if (auctionHouses.containsKey(hostName)) {
+                // If the hostName exists, add the value to its corresponding List
+                auctionHouses.get(hostName).add(value);
             } else {
-                // If the key does not exist, create a new List and add the value
-                List<Integer> values = new ArrayList<>();
-                values.add(value);
-                auctionHouses.put(key, values);
+                // If the hostName does not exist, create a new List and add the value
+                List<Integer> auctionHousePortNumber = new ArrayList<>();
+                auctionHousePortNumber.add(value);
+                auctionHouses.put(hostName, auctionHousePortNumber);
             }
         }
         System.out.println("auctions available: ");
@@ -113,6 +113,34 @@ public class Agent {
             for (Integer value : values) {
                 System.out.println(i + ". location: " + key + " port: " + value);
                 i++;
+            }
+        }
+    }
+
+    //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
+    public class AgentWorker implements Runnable {
+        public AgentWorker (Socket clientSocket) {
+        }
+
+        @Override
+        public void run() {
+            String messageIn;
+            int bid = 0;
+            try {
+                // read the incoming message from the client
+                messageIn = in.readLine();
+                while(!messageIn.equals("END")) {
+                    // process the message and send a response
+                    System.out.println("the message to auctionHouse: " + messageIn);
+                    switch (messageIn) {
+                        case "PLACE_BID" -> {
+                            out.println("How much would you like to bid?");
+                        }
+                    }
+                    messageIn = in.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
