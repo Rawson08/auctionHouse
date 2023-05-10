@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
@@ -10,15 +7,15 @@ public class Agent {
     private String accountNumber;
     private Map<String, List<Integer>> auctionHouses;
     private Socket clientSocket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     public Agent() {
         this.currentBalance = currentBalance;
         this.auctionHouses = new HashMap<>();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         Agent a = new Agent();
         Scanner systemIn = new Scanner(System.in);
         System.out.println("enter bank hostname:");
@@ -29,12 +26,27 @@ public class Agent {
         a.connectToAuctionHouse();
     }
 
-    public void connectToAuctionHouse() {
+    public void connectToAuctionHouse() throws IOException, ClassNotFoundException {
         // Connect to the given auction house and add it to the list of connected auction houses
         Scanner sysin = new Scanner(System.in);
         if(!auctionHouses.isEmpty()) {
             System.out.println("Which auction would you like to connect to?");
             int auctionSelected = sysin.nextInt();
+            // connect to the auction house as long as the bank is connected
+            while(clientSocket.isConnected()){
+                Object object = in.readObject();
+                if (object instanceof ClientAddress clientAddress){
+                    Socket auctionConnection = new Socket(clientAddress.getipAdress(), clientAddress.getPortNumber());
+                    System.out.println("Connected to auction house: " + auctionSelected);
+
+                }
+                else{
+                    setBalance((double) object);
+                }
+            }
+
+
+
         }
         else System.out.println("there are no Auctions available");
     }
@@ -63,25 +75,25 @@ public class Agent {
         this.currentBalance = balance;
     }
 
-    public void connectToBank(String hostname, int port) throws IOException {
+    public void connectToBank(String hostname, int port) throws IOException, ClassNotFoundException {
         clientSocket = new Socket(hostname, port);
-        in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        in =new ObjectInputStream(clientSocket.getInputStream());
+        out = new ObjectOutputStream(clientSocket.getOutputStream());
 
         // Send a new account request to the Bank server
-        out.println("CREATE_ACCOUNT");
+        out.writeObject("CREATE_ACCOUNT");
 
         // Receive response from the Bank server
-        String response = in.readLine();
+        String response = (String) in.readObject();
         this.accountNumber = response;
         System.out.println(response);
 
         //get list of available auction houses from bank
-        out.println("GET_AUCTIONS");
+        out.writeObject("GET_AUCTIONS");
         String auctionsString;
 
         //receive and parse list of available auctions
-        auctionsString = in.readLine();
+        auctionsString = (String) in.readObject();
         auctionsString = auctionsString.replace("[", "").replace("]", "");
         String[] pairs = auctionsString.split(", ");
         for (String pair : pairs) {
@@ -102,7 +114,7 @@ public class Agent {
         }
         System.out.println("auctions available: ");
         printAuctions();
-        out.println("END");
+        out.writeObject("END");
     }
 
     public void printAuctions(){
@@ -128,18 +140,18 @@ public class Agent {
             int bid = 0;
             try {
                 // read the incoming message from the client
-                messageIn = in.readLine();
+                messageIn = (String)in.readObject();
                 while(!messageIn.equals("END")) {
                     // process the message and send a response
                     System.out.println("the message to auctionHouse: " + messageIn);
                     switch (messageIn) {
                         case "PLACE_BID" -> {
-                            out.println("How much would you like to bid?");
+                            out.writeObject("How much would you like to bid?");
                         }
                     }
-                    messageIn = in.readLine();
+                    messageIn = (String) in.readObject();
                 }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }

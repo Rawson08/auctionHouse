@@ -46,6 +46,8 @@ public class AuctionHouse implements Runnable {
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         //add three items to auction list
+//        InputStream itemLists = AuctionHouse.class.getClassLoader().getResourceAsStream("inputFile.txt");
+//        Scanner scanInputFile = new Scanner(itemLists);
         addItem(Item.ps5);
         addItem(Item.xbox);
         addItem(Item.iPhone);
