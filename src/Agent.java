@@ -38,6 +38,7 @@ public class Agent {
                 if (object instanceof ClientAddress clientAddress){
                     Socket auctionConnection = new Socket(clientAddress.getipAdress(), clientAddress.getPortNumber());
                     System.out.println("Connected to auction house: " + auctionSelected);
+                    System.out.println("\n");
 
                 }
                 else{
