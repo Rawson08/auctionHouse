@@ -47,6 +47,7 @@ public class TakeUsername extends VBox {
         submitButton.setDisable(userBalance.getText().equals("") && userName.getText().matches("^[0-9]+$"));
         submitButton.setOnAction(event -> {
 
+
             //TODO: Add event handler for the submit button, which will basically send the stored values to the agent
         });
         addChildren(submitButton);
