@@ -72,9 +72,50 @@ public class AuctionHouse implements Runnable {
         this.items.add(item);
     }
 
-    // Place a bid on an item in the auction house
     public void placeBid(Item item, Bid bid) {
-        // TODO: Implement the logic for placing a bid
+        if (items.contains(item)) {
+            // Check if the bid amount is higher than the current highest bid
+            if (bid.amount() > item.getHighestBid().amount()) {
+                // Request the bank to block the funds for the bid
+                boolean fundsBlocked = requestBankToBlockFunds(bid.amount());
+
+                if (fundsBlocked) {
+                    // Unblock the funds for the previous highest bid (if any)
+                    unblockFundsForPreviousHighestBid(item);
+
+                    // Set the bid as the new highest bid for the item
+                    item.setHighestBid(bid);
+                    System.out.println("Bid placed successfully.");
+                } else {
+                    System.out.println("Insufficient funds in the bank to place the bid.");
+                }
+            } else {
+                System.out.println("Bid amount is not higher than the current highest bid.");
+            }
+        } else {
+            System.out.println("Item not found in the auction house.");
+        }
+    }
+
+    // Request the bank to block the funds for the bid amount
+    private boolean requestBankToBlockFunds(double amount) {
+        out.println("BLOCK_FUNDS " + accountNumber + " " + amount);
+        String response;
+        try {
+            response = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return response.equals("FUNDS_BLOCKED");
+    }
+
+    // Unblock the funds for the previous highest bid (if any)
+    private void unblockFundsForPreviousHighestBid(Item item) {
+        Bid previousHighestBid = item.getHighestBid();
+        if (previousHighestBid != null) {
+            out.println("UNBLOCK_FUNDS " + accountNumber + " " + previousHighestBid.amount());
+        }
     }
 
     @Override
@@ -97,6 +138,7 @@ public class AuctionHouse implements Runnable {
             e.printStackTrace();
         }
     }
+
 
     public class AuctionWorker implements Runnable {
         public AuctionWorker(Socket clientSocket) {

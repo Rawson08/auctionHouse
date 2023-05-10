@@ -131,35 +131,47 @@ public class Bank{
             String messageIn;
             String accountNumber = "";
             try {
-                    // read the incoming message from the client
-                    messageIn = in.readLine();
-                    while(!messageIn.equals("END")) {
-                        // process the message and send a response
-                        System.out.println("the message to bank: " + messageIn);
-                        switch (messageIn) {
-                            case "CREATE_ACCOUNT" -> {
-                                accountNumber = bank.createAccount(10000);
-                                out.println(accountNumber);
-                            }
-                            case "GET_AUCTIONS" -> {
-                                out.println(auctionHouses.values());
-                                System.out.println("sent auctions: " + auctionHouses.values());
-                            }
-                            case "CREATE_AUCTION" -> {
-                                String auction = bank.createAccount(1000);
-                                out.println(auction);
-                                String address = in.readLine();
-                                addAuctionHouse(auction, address);
-                                out.println(address);
-                            }
+                // read the incoming message from the client
+                messageIn = in.readLine();
+                while (!messageIn.equals("END")) {
+                    // process the message and send a response
+                    System.out.println("the message to bank: " + messageIn);
+
+                    switch (messageIn) {
+                        case "CREATE_ACCOUNT" -> {
+                            accountNumber = bank.createAccount(10000);
+                            out.println(accountNumber);
                         }
-                        messageIn = in.readLine();
+                        case "GET_AUCTIONS" -> {
+                            out.println(auctionHouses.values());
+                            System.out.println("sent auctions: " + auctionHouses.values());
+                        }
+                        case "CREATE_AUCTION" -> {
+                            String auction = bank.createAccount(1000);
+                            out.println(auction);
+                            String address = in.readLine();
+                            addAuctionHouse(auction, address);
+                            out.println(address);
+                        }
+                        case "BLOCK_FUNDS" -> {
+                            accountNumber = in.readLine();
+                            double amount = Double.parseDouble(in.readLine());
+                            blockFunds(accountNumber, amount);
+                            out.println("FUNDS_BLOCKED");
+                        }
+                        case "UNBLOCK_FUNDS" -> {
+                            accountNumber = in.readLine();
+                            double amount = Double.parseDouble(in.readLine());
+                            unblockFunds(accountNumber, amount);
+                            out.println("FUNDS_UNBLOCKED");
+                        }
                     }
+                    messageIn = in.readLine();
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-
 
     }
 

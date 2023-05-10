@@ -1,14 +1,9 @@
-/**
- * represents an item to go up for bid
- * @param name is the name of the Item to bid on
- * @param description has a description of the item
- * @param startingPrice is the minimum bid amount to start
- */
 public record Item(String name, String description, double startingPrice) {
+    private static Bid highestBid; // Field to store the current highest bid
 
-    public static final Item iPhone = new Item("IPhone","iPhone 12",800);
-    public static final Item ps5 = new Item("PS5","Play Station 5",500);
-    public static final Item xbox = new Item("XBX","Xbox Series X",500);
+    public static final Item iPhone = new Item("IPhone", "iPhone 12", 800);
+    public static final Item ps5 = new Item("PS5", "Play Station 5", 500);
+    public static final Item xbox = new Item("XBX", "Xbox Series X", 500);
 
     public static Item getIPhone() {
         return iPhone;
@@ -22,6 +17,14 @@ public record Item(String name, String description, double startingPrice) {
         return xbox;
     }
 
+    public static Bid getHighestBid() {
+        return highestBid;
+    }
+
+    public void setHighestBid(Bid bid) {
+        highestBid = bid;
+    }
+
     /**
      * @return String with name, description, and starting price
      */
@@ -30,4 +33,3 @@ public record Item(String name, String description, double startingPrice) {
         return String.format("%s: %s ($%.2f)", name, description, startingPrice);
     }
 }
-
