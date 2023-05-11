@@ -1,53 +1,75 @@
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.*;
 
-public class Agent {
+public class Agent implements Runnable{
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    private String username;
     private double currentBalance;
+
+    public double getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(double currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
+    public double getAvailableBalance() {
+        return availableBalance;
+    }
+
+    public void setAvailableBalance(double availableBalance) {
+        this.availableBalance = availableBalance;
+    }
+
+    public double getTotalBalance() {
+        return totalBalance;
+    }
+
+    public void setTotalBalance(double totalBalance) {
+        this.totalBalance = totalBalance;
+    }
+
+    private double totalBalance;
+    private double availableBalance;
     private String accountNumber;
     private Map<String, List<Integer>> auctionHouses;
     private Socket clientSocket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private BufferedReader in;
+    private PrintWriter out;
 
     public Agent() {
+        this.username = username;
         this.currentBalance = currentBalance;
         this.auctionHouses = new HashMap<>();
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        Agent a = new Agent();
-        Scanner systemIn = new Scanner(System.in);
-        System.out.println("enter bank hostname:");
-        String hostname = systemIn.nextLine();
-        System.out.println("enter bank port: ");
-        int port = systemIn.nextInt();
-        a.connectToBank(hostname, port);
-        a.connectToAuctionHouse();
+    public static void main(String[] args) throws IOException {
+//        Agent a = new Agent();
+//        Scanner systemIn = new Scanner(System.in);
+//        System.out.println("enter bank hostname:");
+//        String hostname = systemIn.nextLine();
+//        System.out.println("enter bank port: ");
+//        int port = systemIn.nextInt();
+//        a.connectToBank(hostname, port);
+//        a.connectToAuctionHouse();
     }
 
-    public void connectToAuctionHouse() throws IOException, ClassNotFoundException {
+    public void connectToAuctionHouse() {
         // Connect to the given auction house and add it to the list of connected auction houses
         Scanner sysin = new Scanner(System.in);
         if(!auctionHouses.isEmpty()) {
             System.out.println("Which auction would you like to connect to?");
             int auctionSelected = sysin.nextInt();
-            // connect to the auction house as long as the bank is connected
-            while(clientSocket.isConnected()){
-                Object object = in.readObject();
-                if (object instanceof ClientAddress clientAddress){
-                    Socket auctionConnection = new Socket(clientAddress.getipAdress(), clientAddress.getPortNumber());
-                    System.out.println("Connected to auction house: " + auctionSelected);
-                    System.out.println("\n");
-
-                }
-                else{
-                    setBalance((double) object);
-                }
-            }
-
-
-
         }
         else System.out.println("there are no Auctions available");
     }
@@ -76,25 +98,25 @@ public class Agent {
         this.currentBalance = balance;
     }
 
-    public void connectToBank(String hostname, int port) throws IOException, ClassNotFoundException {
+    public void connectToBank(String hostname, int port) throws IOException {
         clientSocket = new Socket(hostname, port);
-        in =new ObjectInputStream(clientSocket.getInputStream());
-        out = new ObjectOutputStream(clientSocket.getOutputStream());
+        in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
 
         // Send a new account request to the Bank server
-        out.writeObject("CREATE_ACCOUNT");
+        out.println("CREATE_ACCOUNT");
 
         // Receive response from the Bank server
-        String response = (String) in.readObject();
+        String response = in.readLine();
         this.accountNumber = response;
         System.out.println(response);
 
         //get list of available auction houses from bank
-        out.writeObject("GET_AUCTIONS");
+        out.println("GET_AUCTIONS");
         String auctionsString;
 
         //receive and parse list of available auctions
-        auctionsString = (String) in.readObject();
+        auctionsString = in.readLine();
         auctionsString = auctionsString.replace("[", "").replace("]", "");
         String[] pairs = auctionsString.split(", ");
         for (String pair : pairs) {
@@ -115,7 +137,7 @@ public class Agent {
         }
         System.out.println("auctions available: ");
         printAuctions();
-        out.writeObject("END");
+        out.println("END");
     }
 
     public void printAuctions(){
@@ -130,11 +152,29 @@ public class Agent {
         }
     }
 
-    //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
-    //For Bank
-    public class AgentWorkerForBank implements Runnable {
-        public AgentWorkerForBank (Socket clientSocket) {
+    @Override
+    public void run() {
+        Agent a = new Agent();
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+        try {
+            a.connectToBank(hostname, port);
+        } catch (SocketException | EOFException e){
+            System.out.println("Connection Closed");
+            System.exit(0);
+        }catch (IOException e){
+            e.printStackTrace();
         }
+        a.connectToAuctionHouse();    }
+
+    //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
+    public class AgentWorker implements Runnable {
+        public AgentWorker (Socket clientSocket) {
+        }
+
         @Override
         public void run() {
             String messageIn;
@@ -153,33 +193,6 @@ public class Agent {
                     messageIn = in.readLine();
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    public class AgentWorkerForAH implements Runnable {
-        public AgentWorkerForAH (Socket clientSocket) {
-        }
-
-        @Override
-        public void run() {
-            String messageIn;
-            int bid = 0;
-            try {
-                // read the incoming message from the client
-                messageIn = (String)in.readObject();
-                while(!messageIn.equals("END")) {
-                    // process the message and send a response
-                    System.out.println("the message to auctionHouse: " + messageIn);
-                    switch (messageIn) {
-                        case "PLACE_BID" -> {
-                            out.writeObject("How much would you like to bid?");
-                        }
-                    }
-                    messageIn = (String) in.readObject();
-                }
-            } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
