@@ -145,8 +145,10 @@ public class Agent implements Runnable{
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-        System.out.println("Please enter the amount you have: ");
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Hello! What's your name?");
+        username = scanner.nextLine();
+        System.out.println("Please enter the amount you have " + username);
         totalBalance = Integer.parseInt(scanner.nextLine());
 
         System.out.println("Total Balance: " + totalBalance);
