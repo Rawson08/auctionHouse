@@ -47,6 +47,8 @@
 - Agent,AuctionHouse,Bidding
 
 ## Bugs/Known Issues
-
+1. After running the agent, the bidding process doesn't fully function. 
+2. The agent keeps running even after the auction house is closed. 
+3. Agent has to provide auction's ip and port number separately after the bank shows the list of auction houses. 
 
 
