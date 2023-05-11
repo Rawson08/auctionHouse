@@ -45,6 +45,7 @@ public class AuctionHouse implements Runnable {
         //add three items to auction list
 //        InputStream itemLists = AuctionHouse.class.getClassLoader().getResourceAsStream("inputFile.txt");
 //        Scanner scanInputFile = new Scanner(itemLists);
+        out.println("AGENT_CONNECTED");
         addItem(Item.ps5);
         addItem(Item.xbox);
         addItem(Item.iPhone);
@@ -56,6 +57,7 @@ public class AuctionHouse implements Runnable {
         out.println(auctionName + " : " + this.auctionPort);
         response = in.readLine();
         System.out.println("Received message from Bank server: " + response);
+        printItems();
         out.println("END");
     }
 
@@ -142,6 +144,14 @@ public class AuctionHouse implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        printItems();
+
+    }
+
+    private void printItems(){
+        for(Item item: items){
+            System.out.println(item.name()+"-"+item.description()+"-"+item.startingPrice());
+        }
     }
 
 
@@ -160,6 +170,11 @@ public class AuctionHouse implements Runnable {
                     // process the message and send a response
                     System.out.println("the message to auctionHouse: " + messageIn);
                     switch (messageIn) {
+                        case "AGENT_CONNECTED" ->{
+                            for(Item item: items){
+                                out.println(item.name()+"-"+item.description()+"-"+item.startingPrice());
+                            }
+                        }
                         case "PLACE_BID" -> {
                             out.println("How much would you like to bid?");
                         }
