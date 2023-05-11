@@ -54,76 +54,41 @@ public class Agent implements Runnable{
     }
 
     public static void main(String[] args) throws IOException {
-//        Agent a = new Agent();
-//        Scanner systemIn = new Scanner(System.in);
-//        System.out.println("enter bank hostname:");
-//        String hostname = systemIn.nextLine();
-//        System.out.println("enter bank port: ");
-//        int port = systemIn.nextInt();
-//        a.connectToBank(hostname, port);
-//        a.connectToAuctionHouse();
+        Agent a = new Agent();
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+        a.connectToBank(hostname, port);
+        a.connectToAuctionHouse();
     }
 
-    /**public void connectToAuctionHouse() {
-        // Connect to the given auction house and add it to the list of connected auction houses
-        Scanner sysin = new Scanner(System.in);
-        if(!auctionHouses.isEmpty()) {
-            System.out.println("Which auction would you like to connect to?");
-            int auctionSelected = sysin.nextInt();
 
-        }
-        else System.out.println("there are no Auctions available");
-    }**/
-
-    public void connectToAuctionHouse() {
+    /**
+     * Method to connect to the desired Auction House
+     * @throws IOException
+     */
+    public void connectToAuctionHouse() throws IOException {
         Scanner sysin = new Scanner(System.in);
         if (!auctionHouses.isEmpty()) {
-            System.out.println("Which auction would you like to connect to?");
-            int auctionSelected = sysin.nextInt();
+            System.out.println("Please say what host name you would like to connect too");
+            String hostname = sysin.nextLine();
+            System.out.println("Please say what port number is it");
+            int portNum = Integer.parseInt(sysin.nextLine());
 
-            int index = 1;
-            String selectedAuction = null;
-            int selectedPort = 0;
-
-            for (Map.Entry<String, List<Integer>> entry : auctionHouses.entrySet()) {
-                String auctionName = entry.getKey();
-                List<Integer> ports = entry.getValue();
-                for (Integer port : ports) {
-                    if (index == auctionSelected) {
-                        selectedAuction = auctionName;
-                        selectedPort = port;
-                        break;
-                    }
-                    index++;
-                }
-                if (selectedAuction != null) {
-                    break;
-                }
+            try {
+                clientSocket = new Socket(hostname,portNum);
+                System.out.println("Connected to server");
             }
-            if (selectedAuction != null) {
-                try {
-                    // Connect to the selected auction house
-                    clientSocket = new Socket(selectedAuction, selectedPort);
-                    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-                    System.out.println("Connected to auction house: " + selectedAuction);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("Invalid auction selection.");
+            catch (IOException e){
+                System.out.println("Failed to connect");
             }
-        } else {
-            System.out.println("There are no auctions available.");
         }
     }
 
+    
 
-    public void disconnectFromAuctionHouse(AuctionHouse auctionHouse) {
-        // Disconnect from the given auction house and remove it from the list of connected auction houses
-    }
 
     public void bidOnItem(AuctionHouse auctionHouse, Item item, double amount) {
         // Place a bid on the given item at the given auction house
@@ -195,7 +160,7 @@ public class Agent implements Runnable{
             String key = entry.getKey();
             List<Integer> values = entry.getValue();
             for (Integer value : values) {
-                System.out.println(i + ". location: " + key + " port: " + value);
+                System.out.println(i + ". Host Name: " + key + " Port: " + value);
                 i++;
             }
         }
@@ -217,7 +182,12 @@ public class Agent implements Runnable{
         }catch (IOException e){
             e.printStackTrace();
         }
-        a.connectToAuctionHouse();    }
+        try {
+            a.connectToAuctionHouse();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
     public class AgentWorker implements Runnable {
