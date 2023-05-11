@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Agent implements Runnable{
@@ -144,6 +145,11 @@ public class Agent implements Runnable{
         in =new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         out = new PrintWriter(clientSocket.getOutputStream(), true);
 
+        System.out.println("Please enter the amount you have: ");
+        Scanner scanner = new Scanner(System.in);
+        totalBalance = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Total Balance: " + totalBalance);
         // Send a new account request to the Bank server
         out.println("CREATE_ACCOUNT");
 
