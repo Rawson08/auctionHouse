@@ -91,6 +91,10 @@ public class Agent implements Runnable{
                 String itemsForSale = auctionHouseIn.readLine();
                 System.out.println("Items for sale:");
                 System.out.println(itemsForSale);
+                itemsForSale = auctionHouseIn.readLine();
+                System.out.println(itemsForSale);
+                itemsForSale = auctionHouseIn.readLine();
+                System.out.println(itemsForSale);
 
             } catch (IOException e) {
                 System.out.println("Failed to connect to the auction house.");
