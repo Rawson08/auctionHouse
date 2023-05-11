@@ -147,7 +147,7 @@ public class Agent {
                     System.out.println("the message to auctionHouse: " + messageIn);
                     switch (messageIn) {
                         case "PLACE_BID" -> {
-                            out.println("How much would you like to bid?");
+                            System.out.println("How much would you like to bid?");
                         }
                     }
                     messageIn = in.readLine();
