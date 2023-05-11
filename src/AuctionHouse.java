@@ -184,12 +184,13 @@ public class AuctionHouse implements Runnable {
                             for(Item item: items){
                                 out.println(item.name()+"-"+item.description()+"-"+item.startingPrice());
                             }
+                            messageIn = in.readLine();
                         }
                         case "PLACE_BID" -> {
                             out.println("How much would you like to bid?");
                         }
                     }
-                    messageIn = in.readLine();
+                    //messageIn = in.readLine();
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
