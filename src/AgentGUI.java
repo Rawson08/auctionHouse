@@ -5,6 +5,20 @@ import javafx.stage.Stage;
 
 public class AgentGUI extends Application {
     private static Agent agent;
+    private static MainScene mainScene;
+    private static Stage primaryStage;
+
+    public static void changeScenes() {
+        Thread t = new Thread(agent);
+        t.start();
+
+        primaryStage.setTitle(agent.getUsername() + "'s Agent");
+        primaryStage.setScene(new Scene(mainScene, 400, 800));
+        primaryStage.setResizable(false);
+        primaryStage.centerOnScreen();
+        primaryStage.show();
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         agent = new Agent();

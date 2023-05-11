@@ -1,12 +1,46 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.*;
 
-public class Agent {
+public class Agent implements Runnable{
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    private String username;
     private double currentBalance;
+
+    public double getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(double currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
+    public double getAvailableBalance() {
+        return availableBalance;
+    }
+
+    public void setAvailableBalance(double availableBalance) {
+        this.availableBalance = availableBalance;
+    }
+
+    public double getTotalBalance() {
+        return totalBalance;
+    }
+
+    public void setTotalBalance(double totalBalance) {
+        this.totalBalance = totalBalance;
+    }
+
+    private double totalBalance;
+    private double availableBalance;
     private String accountNumber;
     private Map<String, List<Integer>> auctionHouses;
     private Socket clientSocket;
@@ -14,19 +48,20 @@ public class Agent {
     private PrintWriter out;
 
     public Agent() {
+        this.username = username;
         this.currentBalance = currentBalance;
         this.auctionHouses = new HashMap<>();
     }
 
     public static void main(String[] args) throws IOException {
-        Agent a = new Agent();
-        Scanner systemIn = new Scanner(System.in);
-        System.out.println("enter bank hostname:");
-        String hostname = systemIn.nextLine();
-        System.out.println("enter bank port: ");
-        int port = systemIn.nextInt();
-        a.connectToBank(hostname, port);
-        a.connectToAuctionHouse();
+//        Agent a = new Agent();
+//        Scanner systemIn = new Scanner(System.in);
+//        System.out.println("enter bank hostname:");
+//        String hostname = systemIn.nextLine();
+//        System.out.println("enter bank port: ");
+//        int port = systemIn.nextInt();
+//        a.connectToBank(hostname, port);
+//        a.connectToAuctionHouse();
     }
 
     public void connectToAuctionHouse() {
@@ -116,6 +151,24 @@ public class Agent {
             }
         }
     }
+
+    @Override
+    public void run() {
+        Agent a = new Agent();
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+        try {
+            a.connectToBank(hostname, port);
+        } catch (SocketException | EOFException e){
+            System.out.println("Connection Closed");
+            System.exit(0);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        a.connectToAuctionHouse();    }
 
     //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
     public class AgentWorker implements Runnable {
