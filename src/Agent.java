@@ -102,6 +102,7 @@ public class Agent implements Runnable{
                 int bidAmount = sysin.nextInt();
                 auctionHouseOut.println(bidAmount);
                 String bidSuccessful = in.readLine();
+                System.out.println(bidSuccessful);
 
             } catch (IOException e) {
                 System.out.println("Failed to connect to the auction house.");
