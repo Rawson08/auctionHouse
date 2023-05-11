@@ -46,7 +46,7 @@ public class TakeUsername extends VBox {
         submitButton.setStyle("-fx-base: #46b920; -fx-text-fill: white");
         submitButton.setDisable(userBalance.getText().equals("") && userName.getText().matches("^[0-9]+$"));
         submitButton.setOnAction(event -> {
-            if (!userBalance.getText().equals("") && ! userName.getText().matches("^[0-9]+$")){
+            if (!userBalance.getText().equals("") && !userName.getText().matches("^[0-9]+$")){
                 agent.setTotalBalance(Double.parseDouble(userBalance.getText()));
                 agent.setAvailableBalance(Double.parseDouble(userBalance.getText()));
                 AgentGUI.changeScenes();
