@@ -13,6 +13,15 @@ public class Agent implements Runnable{
     }
 
     private String username;
+    private double currentBalance;
+
+    public double getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(double currentBalance) {
+        this.currentBalance = currentBalance;
+    }
 
     public double getAvailableBalance() {
         return availableBalance;
@@ -34,61 +43,59 @@ public class Agent implements Runnable{
     private double availableBalance;
     private String accountNumber;
     private Map<String, List<Integer>> auctionHouses;
-
     private Socket clientSocket;
-    private int auctionSelected;
-    private Socket auctionSocket;
     private BufferedReader in;
     private PrintWriter out;
 
     public Agent() {
         this.username = username;
-        this.totalBalance = totalBalance;
+        this.currentBalance = currentBalance;
         this.auctionHouses = new HashMap<>();
     }
 
     public static void main(String[] args) throws IOException {
-//        Agent a = new Agent();
-//        Scanner systemIn = new Scanner(System.in);
-//        System.out.println("enter bank hostname:");
-//        String hostname = systemIn.nextLine();
-//        System.out.println("enter bank port: ");
-//        int port = systemIn.nextInt();
-//        a.connectToBank(hostname, port);
-//        a.connectToAuctionHouse();
+        Agent a = new Agent();
+        Scanner systemIn = new Scanner(System.in);
+        System.out.println("enter bank hostname:");
+        String hostname = systemIn.nextLine();
+        System.out.println("enter bank port: ");
+        int port = systemIn.nextInt();
+        a.connectToBank(hostname, port);
+        a.connectToAuctionHouse();
     }
 
+
+    /**
+     * Method to connect to the desired Auction House
+     * @throws IOException
+     */
     public void connectToAuctionHouse() throws IOException {
-        // Connect to the given auction house and add it to the list of connected auction houses
         Scanner sysin = new Scanner(System.in);
-        if(!auctionHouses.isEmpty()) {
-            System.out.println("Which auction would you like to connect to?");
-            auctionSelected = sysin.nextInt();
+        if (!auctionHouses.isEmpty()) {
+            System.out.println("Please say what host name you would like to connect too");
+            String hostname = sysin.nextLine();
+            System.out.println("Please say what port number is it");
+            int portNum = Integer.parseInt(sysin.nextLine());
+
+            try {
+                clientSocket = new Socket(hostname,portNum);
+                System.out.println("Connected to server");
+            }
+            catch (IOException e){
+                System.out.println("Failed to connect");
+            }
         }
-        else System.out.println("there are no Auctions available");
-
-//        while (clientSocket.isConnected()){
-//            Object ob = in.read();
-//            if (ob instanceof ClientAddress client){
-//                clientSocket = new Socket(client.getipAdress(), client.getPortNumber());
-//                System.out.println("Connected to Auction House" + (auctionSelected) + ".");
-//                ItemWatcher itemWatcher = new ItemWatcher(auctionSocket, auctionSelected, Integer.parseInt(accountNumber));
-//                auctionSelected++;
-//                auctionHouse.put(itemWatcher.getItemNumber(), itemWatcher);
-//                (new Thread(itemWatcher)).start();
-//            }
-//            else {
-//                setTotalBalance((double) ob);
-//            }
-//        }
     }
 
-    public void disconnectFromAuctionHouse(AuctionHouse auctionHouse) {
-        // Disconnect from the given auction house and remove it from the list of connected auction houses
-    }
+    
+
 
     public void bidOnItem(AuctionHouse auctionHouse, Item item, double amount) {
         // Place a bid on the given item at the given auction house
+    }
+
+    public double getBalance() {
+        return currentBalance;
     }
 
     public String getAccountName() {
@@ -97,6 +104,12 @@ public class Agent implements Runnable{
 
     public Map<String, List<Integer>> getAuctionHouses() {
         return auctionHouses;
+    }
+
+
+
+    public void setBalance(double balance) {
+        this.currentBalance = balance;
     }
 
     public void connectToBank(String hostname, int port) throws IOException {
@@ -147,7 +160,7 @@ public class Agent implements Runnable{
             String key = entry.getKey();
             List<Integer> values = entry.getValue();
             for (Integer value : values) {
-                System.out.println(i + ". location: " + key + " port: " + value);
+                System.out.println(i + ". Host Name: " + key + " Port: " + value);
                 i++;
             }
         }
@@ -163,12 +176,16 @@ public class Agent implements Runnable{
         int port = systemIn.nextInt();
         try {
             a.connectToBank(hostname, port);
-            a.connectToAuctionHouse();
         } catch (SocketException | EOFException e){
             System.out.println("Connection Closed");
             System.exit(0);
         }catch (IOException e){
             e.printStackTrace();
+        }
+        try {
+            a.connectToAuctionHouse();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -189,7 +206,7 @@ public class Agent implements Runnable{
                     System.out.println("the message to auctionHouse: " + messageIn);
                     switch (messageIn) {
                         case "PLACE_BID" -> {
-                            out.println("How much would you like to bid?");
+                            System.out.println("How much would you like to bid?");
                         }
                     }
                     messageIn = in.readLine();
@@ -200,3 +217,4 @@ public class Agent implements Runnable{
         }
     }
 }
+

@@ -15,9 +15,6 @@ public class AuctionHouse implements Runnable {
     private int auctionPort = 8000;
     private String auctionName;
 
-    public List<Item> getItems() {
-        return items;
-    }
 
     //will hold a list of items up for auction
     private List<Item> items;
@@ -74,6 +71,10 @@ public class AuctionHouse implements Runnable {
         this.items.add(item);
     }
 
+    public List<Item> getItems() {
+        return items;
+    }
+
     public void placeBid(Item item, Bid bid) {
         if (items.contains(item)) {
             // Check if the bid amount is higher than the current highest bid
@@ -98,6 +99,8 @@ public class AuctionHouse implements Runnable {
             System.out.println("Item not found in the auction house.");
         }
     }
+
+
 
     // Request the bank to block the funds for the bid amount
     private boolean requestBankToBlockFunds(double amount) {
