@@ -64,15 +64,62 @@ public class Agent implements Runnable{
 //        a.connectToAuctionHouse();
     }
 
-    public void connectToAuctionHouse() {
+    /**public void connectToAuctionHouse() {
         // Connect to the given auction house and add it to the list of connected auction houses
         Scanner sysin = new Scanner(System.in);
         if(!auctionHouses.isEmpty()) {
             System.out.println("Which auction would you like to connect to?");
             int auctionSelected = sysin.nextInt();
+
         }
         else System.out.println("there are no Auctions available");
+    }**/
+
+    public void connectToAuctionHouse() {
+        Scanner sysin = new Scanner(System.in);
+        if (!auctionHouses.isEmpty()) {
+            System.out.println("Which auction would you like to connect to?");
+            int auctionSelected = sysin.nextInt();
+
+            int index = 1;
+            String selectedAuction = null;
+            int selectedPort = 0;
+
+            for (Map.Entry<String, List<Integer>> entry : auctionHouses.entrySet()) {
+                String auctionName = entry.getKey();
+                List<Integer> ports = entry.getValue();
+                for (Integer port : ports) {
+                    if (index == auctionSelected) {
+                        selectedAuction = auctionName;
+                        selectedPort = port;
+                        break;
+                    }
+                    index++;
+                }
+                if (selectedAuction != null) {
+                    break;
+                }
+            }
+            if (selectedAuction != null) {
+                try {
+                    // Connect to the selected auction house
+                    clientSocket = new Socket(selectedAuction, selectedPort);
+                    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                    System.out.println("Connected to auction house: " + selectedAuction);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("Invalid auction selection.");
+            }
+        } else {
+            System.out.println("There are no auctions available.");
+        }
     }
+
 
     public void disconnectFromAuctionHouse(AuctionHouse auctionHouse) {
         // Disconnect from the given auction house and remove it from the list of connected auction houses
@@ -93,6 +140,8 @@ public class Agent implements Runnable{
     public Map<String, List<Integer>> getAuctionHouses() {
         return auctionHouses;
     }
+
+
 
     public void setBalance(double balance) {
         this.currentBalance = balance;
