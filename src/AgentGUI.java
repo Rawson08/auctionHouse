@@ -38,6 +38,7 @@ public class AgentGUI extends Application {
         primaryStage.setScene(new Scene(takeUsername, 340, 250));
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(event -> {
+
             //TODO: Close the particular agent only and then exit
             System.exit(0);
         });
@@ -46,5 +47,7 @@ public class AgentGUI extends Application {
 
     private void updateGUI() {
         //TODO: GUI initialization and updates
+
+
     }
 }
