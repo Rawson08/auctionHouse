@@ -1,5 +1,5 @@
 public record Item(String name, String description, double startingPrice) {
-    private static Bid highestBid; // Field to store the current highest bid
+    private static double highestBid = 0; // Field to store the current highest bid
 
     public static final Item iPhone = new Item("IPhone", "iPhone 12", 800);
     public static final Item ps5 = new Item("PS5", "Play Station 5", 500);
@@ -17,11 +17,11 @@ public record Item(String name, String description, double startingPrice) {
         return xbox;
     }
 
-    public static Bid getHighestBid() {
+    public static double getHighestBid() {
         return highestBid;
     }
 
-    public void setHighestBid(Bid bid) {
+    public void setHighestBid(double bid) {
         highestBid = bid;
     }
 

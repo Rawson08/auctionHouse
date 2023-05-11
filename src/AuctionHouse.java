@@ -80,7 +80,7 @@ public class AuctionHouse implements Runnable {
     public void placeBid(Item item, Bid bid) {
         if (items.contains(item)) {
             // Check if the bid amount is higher than the current highest bid
-            if (bid.amount() > item.getHighestBid().amount()) {
+            if (bid.amount() > item.getHighestBid()) {
                 // Request the bank to block the funds for the bid
                 boolean fundsBlocked = requestBankToBlockFunds(bid.amount());
 
@@ -89,7 +89,7 @@ public class AuctionHouse implements Runnable {
                     unblockFundsForPreviousHighestBid(item);
 
                     // Set the bid as the new highest bid for the item
-                    item.setHighestBid(bid);
+                    item.setHighestBid(bid.amount());
                     System.out.println("Bid placed successfully.");
                 } else {
                     System.out.println("Insufficient funds in the bank to place the bid.");
@@ -119,9 +119,9 @@ public class AuctionHouse implements Runnable {
 
     // Unblock the funds for the previous highest bid (if any)
     private void unblockFundsForPreviousHighestBid(Item item) {
-        Bid previousHighestBid = item.getHighestBid();
-        if (previousHighestBid != null) {
-            out.println("UNBLOCK_FUNDS " + accountNumber + " " + previousHighestBid.amount());
+        double previousHighestBid = item.getHighestBid();
+        if (previousHighestBid != 0) {
+            out.println("UNBLOCK_FUNDS " + accountNumber + " " + previousHighestBid);
         }
     }
 
@@ -188,7 +188,8 @@ public class AuctionHouse implements Runnable {
                             int itemNumber = Integer.parseInt(messageIn);
                             double bidAmount = Double.parseDouble(in.readLine());
                             Bid currentBid = new Bid(items.get(itemNumber),bidAmount);
-                            placeBid(items.get(itemNumber), currentBid);
+                            placeBid(items.get(itemNumber - 1), currentBid);
+                            out.println("BID_PLACED");
                         }
                         case "PLACE_BID" -> {
                             out.println("How much would you like to bid?");
