@@ -17,7 +17,7 @@ public class AuctionHouse implements Runnable {
 
 
     //will hold a list of items up for auction
-    private List<Item> items;
+    private static List<Item> items;
     //list of bids in auction house
     private List<Bid> bids;
     private Socket clientSocket;
@@ -46,6 +46,7 @@ public class AuctionHouse implements Runnable {
 //        InputStream itemLists = AuctionHouse.class.getClassLoader().getResourceAsStream("inputFile.txt");
 //        Scanner scanInputFile = new Scanner(itemLists);
         out.println("AGENT_CONNECTED");
+        out.println("Item: " + Item.ps5);
         addItem(Item.ps5);
         addItem(Item.xbox);
         addItem(Item.iPhone);
@@ -148,9 +149,9 @@ public class AuctionHouse implements Runnable {
 
     }
 
-    private void printItems(){
+    public void printItems(){
         for(Item item: items){
-            System.out.println(item.name()+"-"+item.description()+"-"+item.startingPrice());
+            System.out.println(item.name()+" - "+item.description()+" - "+item.startingPrice());
         }
     }
 
