@@ -69,25 +69,40 @@ public class Agent implements Runnable{
      * Method to connect to the desired Auction House
      * @throws IOException
      */
-    public void connectToAuctionHouse() throws IOException {
+    public void connectToAuctionHouse() {
         Scanner sysin = new Scanner(System.in);
         if (!auctionHouses.isEmpty()) {
-            System.out.println("Please say what host name you would like to connect too");
+            System.out.println("Please enter the hostname of the auction house you would like to connect to:");
             String hostname = sysin.nextLine();
-            System.out.println("Please say what port number is it");
+            System.out.println("Please enter the port number of the auction house:");
             int portNum = Integer.parseInt(sysin.nextLine());
 
             try {
-                clientSocket = new Socket(hostname,portNum);
-                System.out.println("Connected to server");
-            }
-            catch (IOException e){
-                System.out.println("Failed to connect");
+                clientSocket = new Socket(hostname, portNum);
+                System.out.println("Connected to auction house: " + hostname + ":" + portNum);
+
+                // Send "AGENT_CONNECTED" message to the auction house
+                PrintWriter auctionHouseOut = new PrintWriter(clientSocket.getOutputStream(), true);
+                auctionHouseOut.println("AGENT_CONNECTED");
+                System.out.println("Sent AGENT_CONNECTED message to the auction house.");
+
+                // Get the list of items for sale from the auction house
+                BufferedReader auctionHouseIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                String itemsForSale = auctionHouseIn.readLine();
+                System.out.println("Items for sale:");
+                System.out.println(itemsForSale);
+
+            } catch (IOException e) {
+                System.out.println("Failed to connect to the auction house.");
+                e.printStackTrace();
             }
         }
     }
 
-    
+
+
+
+
 
 
     public void bidOnItem(AuctionHouse auctionHouse, Item item, double amount) {
@@ -182,11 +197,9 @@ public class Agent implements Runnable{
         }catch (IOException e){
             e.printStackTrace();
         }
-        try {
-            a.connectToAuctionHouse();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        a.connectToAuctionHouse();
+
     }
 
     //TODO: Modify the worker class for Agent (Make each for bank and auctionHouse)
@@ -216,5 +229,7 @@ public class Agent implements Runnable{
             }
         }
     }
+
+
 }
 
