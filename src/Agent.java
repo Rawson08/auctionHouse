@@ -98,6 +98,9 @@ public class Agent implements Runnable{
                 System.out.println("which item would you like to bid on?");
                 int itemNumber = sysin.nextInt();
                 auctionHouseOut.println(itemNumber);
+                System.out.println("how much would you like to bid?");
+                int bidAmount = sysin.nextInt();
+                auctionHouseOut.println(bidAmount);
                 String bidSuccessful = in.readLine();
 
             } catch (IOException e) {

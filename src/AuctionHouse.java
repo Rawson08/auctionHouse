@@ -185,6 +185,10 @@ public class AuctionHouse implements Runnable {
                                 out.println(item.name()+"-"+item.description()+"-"+item.startingPrice());
                             }
                             messageIn = in.readLine();
+                            int itemNumber = Integer.parseInt(messageIn);
+                            double bidAmount = Double.parseDouble(in.readLine());
+                            Bid currentBid = new Bid(items.get(itemNumber),bidAmount);
+                            placeBid(items.get(itemNumber), currentBid);
                         }
                         case "PLACE_BID" -> {
                             out.println("How much would you like to bid?");
