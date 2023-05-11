@@ -17,7 +17,7 @@ public class AuctionHouse implements Runnable {
 
 
     //will hold a list of items up for auction
-    private static List<Item> items;
+    private List<Item> items;
     //list of bids in auction house
     private List<Bid> bids;
     private Socket clientSocket;
@@ -45,8 +45,7 @@ public class AuctionHouse implements Runnable {
         //add three items to auction list
 //        InputStream itemLists = AuctionHouse.class.getClassLoader().getResourceAsStream("inputFile.txt");
 //        Scanner scanInputFile = new Scanner(itemLists);
-        out.println("AGENT_CONNECTED");
-        out.println("Item: " + Item.ps5);
+        //out.println("AGENT_CONNECTED");
         addItem(Item.ps5);
         addItem(Item.xbox);
         addItem(Item.iPhone);
@@ -149,24 +148,34 @@ public class AuctionHouse implements Runnable {
 
     }
 
-    public void printItems(){
+    private void printItems(){
         for(Item item: items){
-            System.out.println(item.name()+" - "+item.description()+" - "+item.startingPrice());
+            System.out.println(item.name()+"-"+item.description()+"-"+item.startingPrice());
         }
     }
 
 
     public class AuctionWorker implements Runnable {
+        private Socket clientSocket;
+        private BufferedReader in;
+        private PrintWriter out;
         public AuctionWorker(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+            try {
+                this.in = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()));
+                this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void run() {
-            String messageIn;
+
             int bid = 0;
             try {
                 // read the incoming message from the client
-                messageIn = in.readLine();
+                String messageIn = in.readLine();
                 while(!messageIn.equals("END")) {
                     // process the message and send a response
                     System.out.println("the message to auctionHouse: " + messageIn);
