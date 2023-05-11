@@ -90,11 +90,15 @@ public class Agent implements Runnable{
                 BufferedReader auctionHouseIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 String itemsForSale = auctionHouseIn.readLine();
                 System.out.println("Items for sale:");
-                System.out.println(itemsForSale);
+                System.out.println("1. " + itemsForSale);
                 itemsForSale = auctionHouseIn.readLine();
-                System.out.println(itemsForSale);
+                System.out.println("2. " + itemsForSale);
                 itemsForSale = auctionHouseIn.readLine();
-                System.out.println(itemsForSale);
+                System.out.println("3. " + itemsForSale);
+                System.out.println("which item would you like to bid on?");
+                int itemNumber = sysin.nextInt();
+                auctionHouseOut.println(itemNumber);
+                String bidSuccessful = in.readLine();
 
             } catch (IOException e) {
                 System.out.println("Failed to connect to the auction house.");
